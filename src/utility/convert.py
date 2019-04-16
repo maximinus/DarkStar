@@ -6,29 +6,9 @@ import numpy
 import shutil
 import random
 from pydub import AudioSegment
-from helpers import getAllFiles, Slicer, TIMESLICE
+
+from helpers import getDataDirectory, sliceFiles
 from constants import TIMESLICE, DATA_SIZE
-
-
-GRATEFUL_DEAD = 'GRATEFUL_DEAD'
-OTHER = 'OTHER'
-WAVS = 'WAV'
-SLICES = 'SLICES'
-
-
-def slice():
-	print('  Slicing GD files...')
-	wav_files = getAllFiles('./WAV/{0}'.format(GRATEFUL_DEAD))
-	print('    (Found {0} GD files)'.format(len(wav_files)))
-	foo = Slicer(wav_files, GRATEFUL_DEAD)
-	gd_total = foo.sliceFiles()
-
-	print('  Slicing Other files...')
-	wav_files = getAllFiles('./WAV/{0}'.format(OTHER))
-	print('    (Found {0} other files)'.format(len(wav_files)))
-	foo = Slicer(wav_files, OTHER)
-	other_total = foo.sliceFiles()
-	print('  GD: {0}, Other: {1}\n  Total Files: {2}'.format(gd_total, other_total, gd_total + other_total))
 
 
 def loadAsArray(files, value):
@@ -75,44 +55,22 @@ def convertInput():
 	saveData(all_data)
 
 
-def getEmpty(size, answer):
-	# create an array of the right size
-	final_data = []
-	for i in range(size):
-		new_data = [random.uniform(0.0, 1.0) for x in range(DATA_SIZE)]
-		final_data.append([numpy.array(new_data), answer])
-	return final_data
+def sliceData():
+	# we go through the WAV directory and fill up the SLICES directory
+	# we use a similar directory structure
+	wav_directory = getDataDirectory('WAV')
+	slice_directory = getDataDirectory('SLICE')
+	print('* Slicing WAV files...')
+	sliceFiles(wav_directory, slice_directory)
 
 
-def buildEmpty():
-	# build a set of 'NO' data that is always 0.1 or less
-	# we assume the 'YES' data is already done
-	print('Building data with empty NO')
-	files = getAllFiles('./SLICES/{0}'.format(GRATEFUL_DEAD), 'raw')
-	data_yes = loadAsArray(files, 1.0)
-	data_no = getEmpty(len(data_yes), 0.0)
-	all_data = data_yes + data_no
-	saveData(all_data)
-
-
-def buildRandom():
-	# build a set of 'NO' data that is random
-	# we assume the 'YES' data is already done
+def createMelData():
+	# we got through folders and convert all the sound clips into MEL spectrograms
+	# we mimic the directory structure for all the images
+	# we delete the output directory at the start of the process
+	# the root directory is always the SLICES directory
 	pass
 
 
 if __name__ == '__main__':
-	if len(sys.argv) < 2:
-		slice()
-		convertInput()
-		sys.exit(True)
-	if sys.argv[1] == 'slice':
-		slice()
-		sys.exit(True)
-	if sys.argv[1] == 'build':
-		convertInput()
-		sys.exit(True)
-	if sys.argv[1] == 'empty':
-		buildEmpty()
-		sys.exit(True)
-	print('  Error: No such command {0}'.format(sys.argv[1]))
+	sliceData()
