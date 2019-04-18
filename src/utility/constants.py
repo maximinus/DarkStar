@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 # length of each slice in milliseconds
-TIMESLICE = 5000
-DATA_SIZE = 8192
+TIMESLICE = 10000
+# difference of time between samples
+TIME_DELTA = 2000
 
-GRATEFUL_DEAD = 'GRATEFUL_DEAD'
-OTHER = 'OTHER'
-WAVS = 'WAV'
-SLICES = 'SLICES'
+SLICES_FOLDER = 'SLICES'
 MEL_FOLDER = 'MEL'
+TMP_FOLDER = 'TMP'
+WAV_FOLDER = 'WAV'

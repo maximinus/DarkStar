@@ -7,8 +7,8 @@ import shutil
 import random
 from pydub import AudioSegment
 
-from helpers import getDataDirectory, sliceFiles
-from constants import TIMESLICE, DATA_SIZE
+from helpers import getDataDirectory, sliceAndConvert
+from constants import TIMESLICE, WAV_FOLDER, MEL_FOLDER
 
 
 def loadAsArray(files, value):
@@ -55,22 +55,17 @@ def convertInput():
 	saveData(all_data)
 
 
-def sliceData():
-	# we go through the WAV directory and fill up the SLICES directory
-	# we use a similar directory structure
-	wav_directory = getDataDirectory('WAV')
-	slice_directory = getDataDirectory('SLICE')
-	print('* Slicing WAV files...')
-	sliceFiles(wav_directory, slice_directory)
+def convertDataToMel():
+	print('* Converting GD to MEL spectrograms...')
+	wav_directory = getDataDirectory('WAV/GRATEFUL_DEAD')
+	mel_directory = getDataDirectory('MEL/GRATEFUL_DEAD')
+	sliceAndConvert(wav_directory, mel_directory)
 
-
-def createMelData():
-	# we got through folders and convert all the sound clips into MEL spectrograms
-	# we mimic the directory structure for all the images
-	# we delete the output directory at the start of the process
-	# the root directory is always the SLICES directory
-	pass
+	print('* Converting Other to MEL spectrograms...')
+	wav_directory = getDataDirectory('WAV/OTHER')
+	mel_directory = getDataDirectory('MEL/OTHER')
+	sliceAndConvert(wav_directory, mel_directory)
 
 
 if __name__ == '__main__':
-	sliceData()
+	convertDataToMel()

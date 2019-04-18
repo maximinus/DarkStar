@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import os
+from tqdm import tqdm
 import shutil
 from pydub import AudioSegment
 
-from constants import TIMESLICE
+from mel import createMelImage
+from constants import TIMESLICE, TIME_DELTA, TMP_FOLDER
 
 
 def getRootDirectory():
@@ -40,21 +42,24 @@ def getAllFiles(folder, extension='wav'):
 
 def clearDirectory(path):
 	# clear this directory
-	shutil.rmtree(path)
+	try:
+		shutil.rmtree(path)
+	except:
+		# ignore directories that do not exist
+		pass
 	# and then restore it
 	os.mkdir(path)
 
 
 def sliceAsWav(wav_file, output_folder):
 	file_index = 0
-	print('  > Slicing {0} as WAV'.format(wav_file))
 	sound = AudioSegment.from_file(wav_file, format='wav')
 	duration = len(sound)
-	total_slices = len(sound) // TIMESLICE
+	total_slices = (len(sound) - TIMESLICE) // TIME_DELTA
 	for i in range(total_slices):
-		new_slice = sound[i * TIMESLICE: (i + 1) * TIMESLICE]
-		print('{0}/{1}.wav'.format(output_folder, getStringName(file_index)))
-		#new_slice.export('{1}/{2}.wav'.format(output_folder, self.getFilename('wav')), format='wav')
+		start_time = i * TIME_DELTA
+		new_slice = sound[start_time:start_time + TIMESLICE]
+		new_slice.export('{0}/{1}.wav'.format(output_folder, getStringName(file_index)), format='wav')
 		file_index += 1
 
 
@@ -63,21 +68,31 @@ def getStringName(index):
 	return '{0}{1}'.format('0' * (4 - len(number)), number)
 
 
-def sliceFiles(root_folder, destination_folder):
-	print('* Slicing files in {0} to {1}'.format(root_folder, destination_folder))
-	clearDirectory(destination_folder)
-	# we need to recreate all the files in the root
-	for i in [f.path for f in os.scandir(root_folder) if f.is_dir()]:
-		folder_count = 0
-		for j in getAllFiles(i):
-			# get the subdir folder name
-			root = i.split('/')[-1]
-			# add it to the destination folder
-			dest_folder = os.path.join(destination_folder, root)
-			# if it does not exist, create it
-			try:
-				os.makedirs(dest_folder)
-			except:
-				pass
-			sliceAsWav(j, dest_folder)
-			folder_count += 1
+def sliceAndConvert(root_folder, mel_folder):
+	print('* Root: {0}'.format(root_folder))
+	print('* Dest: {0}'.format(mel_folder))
+	tmp_folder = getDataDirectory(TMP_FOLDER)
+	# 1000 files per folder
+	folder_count = 0
+	file_count = 0
+	# clear the output directory
+	clearDirectory(mel_folder)
+	# create the fist directory
+	current_output = '{0}/{1}'.format(mel_folder, getStringName(folder_count))
+	clearDirectory(current_output)
+	# get the actual WAV files themselves
+	for i in tqdm(getAllFiles(root_folder)):
+		print('  * Converting {0} to MEL format time slices'.format(i.split('/')[-1]))
+		clearDirectory(tmp_folder)
+		sliceAsWav(i, tmp_folder)
+		for j in tqdm(getAllFiles(tmp_folder)):
+			# convert each WAV to a MEL
+			filename = '{0}/{1}.png'.format(current_output, getStringName(file_count))
+			createMelImage(j, filename)
+			# update the output filename
+			file_count += 1
+			if file_count > 999:
+				file_count = 0
+				folder_count += 1
+				current_output = '{0}/{1}'.format(mel_folder, getStringName(folder_count))
+				clearDirectory(current_output)
