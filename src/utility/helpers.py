@@ -65,21 +65,16 @@ def sliceAsWav(wav_file, output_folder):
 
 def getStringName(index):
 	number = str(index)
-	return '{0}{1}'.format('0' * (4 - len(number)), number)
+	return '{0}{1}'.format('0' * (6 - len(number)), number)
 
 
 def sliceAndConvert(root_folder, mel_folder):
 	print('* Root: {0}'.format(root_folder))
 	print('* Dest: {0}'.format(mel_folder))
 	tmp_folder = getDataDirectory(TMP_FOLDER)
-	# 1000 files per folder
-	folder_count = 0
 	file_count = 0
 	# clear the output directory
 	clearDirectory(mel_folder)
-	# create the fist directory
-	current_output = '{0}/{1}'.format(mel_folder, getStringName(folder_count))
-	clearDirectory(current_output)
 	# get the actual WAV files themselves
 	for i in tqdm(getAllFiles(root_folder)):
 		print('  * Converting {0} to MEL format time slices'.format(i.split('/')[-1]))
@@ -87,12 +82,7 @@ def sliceAndConvert(root_folder, mel_folder):
 		sliceAsWav(i, tmp_folder)
 		for j in tqdm(getAllFiles(tmp_folder)):
 			# convert each WAV to a MEL
-			filename = '{0}/{1}.png'.format(current_output, getStringName(file_count))
+			filename = '{0}/{1}.png'.format(mel_folder, getStringName(file_count))
 			createMelImage(j, filename)
 			# update the output filename
 			file_count += 1
-			if file_count > 999:
-				file_count = 0
-				folder_count += 1
-				current_output = '{0}/{1}'.format(mel_folder, getStringName(folder_count))
-				clearDirectory(current_output)
