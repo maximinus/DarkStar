@@ -5,14 +5,17 @@ from keras import regularizers, optimizers
 import pandas as pd
 import numpy as np
 
+from utility.helpers import getDataDirectory
 
+IMAGE_WIDTH = 320
+IMAGE_HEIGHT = 240
 BATCH_SIZE = 16
 EPOCHS = 10
 
 
 def getSimpleModel():
 	model = Sequential()
-	model.add(Conv2D(32, (3, 3), input_shape=(3, 640, 480)))
+	model.add(Conv2D(32, (3, 3), input_shape=(3, IMAGE_WIDTH, IMAGE_HEIGHT)))
 	model.add(Activation('relu'))
 	model.add(MaxPooling2D(pool_size=(2,2)))
 	model.add(Conv2D(32, (3, 3)))
@@ -33,7 +36,7 @@ def getSimpleModel():
 
 def getComplexModel():
 	model = Sequential()
-	model.add(Conv2D(32, (3, 3), padding='same', input_shape=(640, 480, 3)))
+	model.add(Conv2D(32, (3, 3), padding='same', input_shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3)))
 	model.add(Activation('relu'))
 	model.add(Conv2D(64, (3, 3)))
 	model.add(Activation('relu'))
@@ -60,26 +63,24 @@ def getComplexModel():
 	return model
 
 
-def loadAsArray(files, value):
-	data = []
-	dtype = numpy.dtype('b')
-	for i in files:
-		data_array = numpy.fromfile(i, dtype)
-		data.append([data_array, value])
-	return data
+def getDatagen():
+	train_datagen = ImageDataGenerator()
+	source = getDataDirectory('DATA/Train')
+	train_generator = train_datagen.flow_from_directory(source, 
+		target_size=(IMAGE_WIDTH, IMAGE_HEIGHT), batch_size=BATCH_SIZE, class_mode='binary')
+	# repeat for testing
+	test_datgen = ImageDataGenerator()
+	source = getDataDirectory('DATA/Valid')
+	test_generator = test_datgen.flow_from_directory(source,
+		target_size=(IMAGE_WIDTH, IMAGE_HEIGHT), batch_size=BATCH_SIZE, class_mode='binary')
+	return train_generator, test_generator
 
 
-#Fitting keras model, no test gen for now
-STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
-STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
-STEP_SIZE_TEST = test_generator.n // test_generator.batch_size
-
-model.fit_generator(generator=train_generator,
-                    steps_per_epoch=STEP_SIZE_TRAIN,
-                    validation_data=valid_generator,
-                    validation_steps=STEP_SIZE_VALID,
-                    epochs=150)
-
-score = model.evaluate_generator(generator=valid_generator, steps=STEP_SIZE_VALID)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+if __name__ == '__main__':
+	train, test = getDatagen()
+	model = getSimpleModel()
+	model.fit_generator(generator=train,
+    	                steps_per_epoch=1000 // BATCH_SIZE,
+        	            validation_data=test,
+            	        validation_steps=500 // BATCH_SIZE,
+                	    epochs=EPOCHS)

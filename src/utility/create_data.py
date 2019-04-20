@@ -1,42 +1,45 @@
 #!/usr/bin/env python3
 
-import numpy
+import shutil
 import random
 from tqdm import tqdm
-from helpers import getAllFiles, getDataDirectory
+from helpers import getAllFiles, getDataDirectory, clearDirectory
 
-# take MEL images and create the final data file to input
+# take MEL images and sort to output directories
 
-def loadAsArray(files, value):
-	data = []
-	dtype = numpy.dtype('b')
+
+# move a list of files from a to b
+def copyFiles(files, destination):
+	print('* Copying files to {0}'.format(destination))
 	for i in tqdm(files):
-		raw_array = numpy.fromfile(i, dtype)
-		data.append([raw_array, value])
-	return data
+		# copy, don't move the files
+		shutil.copy(i, destination)
 
 
-def saveData(all_data):
-	random.shuffle(all_data)
-	x = numpy.array([i[0] for i in all_data])
-	y = numpy.array([i[1] for i in all_data])
-	print('* Learning shape:', x.shape)
-	print('* Question shape:', y.shape)
-	# save these arrays
-	numpy.save('X_DATA', x)
-	numpy.save('Y_DATA', y)	
+def setupMelFiles():
+	# clear directories
+	for i in ['DATA/Train/GD', 'DATA/Valid/GD', 'DATA/Train/Other', 'DATA/Valid/Other']:
+		clearDirectory(getDataDirectory(i))
 
+	# get the GD files
+	gd = getAllFiles(getDataDirectory('MEL/GRATEFUL_DEAD'), 'png')
+	sample_size = int(len(gd) * 0.8)
+	# shuffle in place
+	random.shuffle(gd)
+	gd_train = gd[:sample_size]
+	gd_valid = gd[sample_size:]
+	copyFiles(gd_train, getDataDirectory('DATA/Train/GD'))
+	copyFiles(gd_valid, getDataDirectory('DATA/Valid/GD'))
 
-def convertInput():
-	print('Building data input files')
-	files = getAllFiles(getDataDirectory('MEL/GRATEFUL_DEAD'), 'png')[:200]
-	data_yes = loadAsArray(files, 1.0)
-	files = getAllFiles(getDataDirectory('MEL/OTHER'), 'png')[:200]
-	data_no = loadAsArray(files, 0.0)
-	all_data = data_yes + data_no
-	print('* Size of all data: {0}'.format(len(all_data)))
-	saveData(all_data)
+	# same with the others
+	other = getAllFiles(getDataDirectory('MEL/OTHER'), 'png')
+	sample_size = int(len(other) * 0.8)
+	random.shuffle(other)
+	other_train = other[:sample_size]
+	other_valid = other[sample_size:]
+	copyFiles(other_train, getDataDirectory('DATA/Train/Other'))
+	copyFiles(other_valid, getDataDirectory('DATA/Valid/Other'))
 
 
 if __name__ == '__main__':
-	convertInput()
+	setupMelFiles()
