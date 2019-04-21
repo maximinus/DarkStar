@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization
 from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D
