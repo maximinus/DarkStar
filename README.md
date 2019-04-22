@@ -1,18 +1,25 @@
 # DarkStar
 Machine learning project to create new Grateful Dead shows
 
+Aim:
+
+* Train a GD discriminator
+* Build a GANS to produce GD audio
+
 ## Starting Instructions
 
 The first goal is to produce a discriminator that is able to tell the difference between GD and not GD.
 
 This is done in several steps. First, let's get our setup done:
 
+* git clone https://github.com/maximinus/DarkStar.git
+* cd DarkStar
 * python3 -m venv PYENV-FOLDER-NAME
 * source PYENV-FOLDER-NAME/bin/activate
 * pip install -r requirements.txt
 * sudo apt-get install normalize-audio
 
-Then we organise the basic audio:
+Then we organise the basic audio. This step is quite quick.
 
 * Download a bunch of SBD shows (5/6 is enough) and a bunch of other sound files to about the same length of time.
 * Easiest way for this is with the youtube-dl script: ```youtube-dl -x --audio-format wav YOUTUBE-URL```
@@ -23,7 +30,7 @@ Then we organise the basic audio:
 * Now we need to normalise the audio to be of the same volume
 
 
-Next we need to turn the audio into the correct format (in our case, 320 x 240 MEL spectrograms)
+Next we need to turn the audio into the correct format (in our case, 320 x 240 MEL spectrograms). This takes around 12 hours on my machine.
 
 * First, we normalise the audio volume levels. Run the python script ```normalise.py```.
 * This will take all the files from the WAV folders, normalize them and put them into the data/NORMALISE folder.
