@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization
 from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D
@@ -12,7 +13,7 @@ from helpers import getDataDirectory, getAllFiles
 IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
 BATCH_SIZE = 16
-EPOCHS = 100
+EPOCHS = 20
 
 def getSimpleModel():
 	model = Sequential()
@@ -24,6 +25,7 @@ def getSimpleModel():
 	model.add(MaxPooling2D(pool_size=(2,2)))
 	model.add(Conv2D(64, (3,3)))
 	model.add(Activation('relu'))
+	model.add(MaxPooling2D(pool_size=(2,2)))
 	# convert to 1d
 	model.add(Flatten())
 	model.add(Dense(64))
@@ -65,13 +67,13 @@ def getComplexModel():
 
 
 def getDatagen():
-	train_datagen = ImageDataGenerator()
+	train_datagen = ImageDataGenerator(rescale=1./255)
 	source = getDataDirectory('DATA/Train')
 
 	train_generator = train_datagen.flow_from_directory(source, 
 		target_size=(IMAGE_WIDTH, IMAGE_HEIGHT), batch_size=BATCH_SIZE, class_mode='binary')
 	# repeat for testing
-	test_datgen = ImageDataGenerator()
+	test_datgen = ImageDataGenerator(rescale=1./255)
 	source = getDataDirectory('DATA/Valid')
 	test_generator = test_datgen.flow_from_directory(source,
 		target_size=(IMAGE_WIDTH, IMAGE_HEIGHT), batch_size=BATCH_SIZE, class_mode='binary')
@@ -81,10 +83,14 @@ def getDatagen():
 if __name__ == '__main__':
 	train, test = getDatagen()
 	model = getSimpleModel()
+	model.summary()
+	sys.exit()
 	training_size = len(getAllFiles(getDataDirectory('DATA/Train'), 'png'))
 	validation_size = len(getAllFiles(getDataDirectory('DATA/Valid'), 'png'))
 	model.fit_generator(generator=train,
-    	                steps_per_epoch=2000 // BATCH_SIZE,
+    	                steps_per_epoch=training_size // BATCH_SIZE,
         	            validation_data=test,
-            	        validation_steps=500 // BATCH_SIZE,
-                	    epochs=EPOCHS)
+            	        validation_steps=validation_size // BATCH_SIZE,
+                	    epochs=EPOCHS,
+                	    use_multiprocessing=True)
+	model.save('grateful_dead.h5')
