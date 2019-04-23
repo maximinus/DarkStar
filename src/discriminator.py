@@ -13,7 +13,7 @@ from helpers import getDataDirectory, getAllFiles
 IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
 BATCH_SIZE = 16
-EPOCHS = 20
+EPOCHS = 5
 
 def getSimpleModel():
 	model = Sequential()
@@ -83,8 +83,6 @@ def getDatagen():
 if __name__ == '__main__':
 	train, test = getDatagen()
 	model = getSimpleModel()
-	model.summary()
-	sys.exit()
 	training_size = len(getAllFiles(getDataDirectory('DATA/Train'), 'png'))
 	validation_size = len(getAllFiles(getDataDirectory('DATA/Valid'), 'png'))
 	model.fit_generator(generator=train,

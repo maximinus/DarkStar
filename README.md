@@ -27,17 +27,16 @@ Then we organise the basic audio. This step is quite quick.
 * In the this WAV folder, create a folder GRATEFUL_DEAD and another OTHER.
 * Convert all of your music to WAV and place the GD files in GRATEFUL_DEAD (you may have subdirectories) and the rest in OTHER.
 * Delete all files that are marked tuning / audience or similar in the GD folder.
-* Now we need to normalise the audio to be of the same volume
 
 
 Next we need to turn the audio into the correct format (in our case, 320 x 240 MEL spectrograms). This takes around 12 hours on my machine.
 
 * First, we normalise the audio volume levels. Run the python script ```normalise.py```.
 * This will take all the files from the WAV folders, normalize them and put them into the data/NORMALISE folder.
-* Now we need to turn them into a series of 320 * 240 MEL spectrograms. ```Run *convert.py```. THIS WILL TAKE SOME TIME!
+* Now we need to turn them into a series of 320 * 240 MEL spectrograms. ```Run convert.py```. THIS WILL TAKE SOME TIME!
 * Finally, seperate the resultant MEL images into the required data structure. Run ```create_data.py```
 
 
-Finally you can train the discriminator. Run ```discriminator.py```. This will also take some time. At the end, a file *grateful-dead.h5* will be created - this will be the trainde neural net.
+Finally you can train the discriminator. Run ```discriminator.py```. This will also take some time. At the end, a file *grateful-dead.h5* will be created - this will be the trained neural net.
 
 Currently I find that it generally does not take many epochs to be 90% accurate, but more testing is needed.
