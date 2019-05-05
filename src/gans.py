@@ -19,8 +19,9 @@ from tensorflow.python.tools import optimize_for_inference_lib
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
 
-from helpers import getDataDirectory
+from helpers import getDataDirectory, getAllFiles
 
 
 EPOCHS = 250
@@ -69,14 +70,15 @@ class DCGAN():
         #model.add(Dense(128, activation="relu", input_dim=self.latent_dim, name="generator_input") )
         #model.add(Dropout(0.1))
         
-        model.add(Dense(64 * 32 * 32, activation="relu", input_dim=self.latent_dim, name="generator_input") )
-        model.add(Reshape((32, 32, 64)))
+        model.add(Dense(64 * 40 * 30, activation="relu", input_dim=self.latent_dim, name="generator_input") )
+        model.add(Reshape((30, 40, 64)))
         model.add(UpSampling2D())
 
         model.add(Conv2D(64, kernel_size=3, padding="same"))
         model.add(BatchNormalization(momentum=0.8))
         model.add(Activation("relu"))
         model.add(Dropout(0.1))
+        model.add(UpSampling2D())
         
         model.add(Conv2D(32, kernel_size=3, padding="same"))
         model.add(BatchNormalization(momentum=0.8))
@@ -155,14 +157,13 @@ class DCGAN():
             g_loss = self.combined.train_on_batch(noise, valid)
 
             # Plot the progress
-            if epoch % 10 == 0:
+            if epoch % 5 == 0:
                 print ("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[1], g_loss))
 
             # If at save interval => save generated image samples
             if epoch % save_interval == 0:
-                self.save_imgs( "images/{}_{:05d}.png".format(self.name,epoch) )
-                # self.combined.save_weights("combined_weights ({}).h5".format(self.name)) # https://github.com/keras-team/keras/issues/10949
-                self.generator.save_weights("generator ({}).h5".format(self.name))
+                folder = getDataDirectory('OUTPUT')
+                self.save_imgs('{}/{}_{:05d}.png'.format(folder, self.name, epoch))
 
 
     def save_imgs(self, name=''):
@@ -194,14 +195,14 @@ class DCGAN():
         plt.close()
     
 
-def create_dataset(xSize=320, ySize=240, directory='dataset/'):
+def create_dataset(x_size=320, y_size=240, directory='dataset/'):
     # this puts all the images into one massive dataset and returns it
-    images = glob.glob('{}*.png'.format(directory))
+    images = getAllFiles(directory, 'png')
     x_train = []
     y_train = []
-    for i in range(len(images)):
+    for i in tqdm(range(200)):
         img = Image.open(images[i])
-        x_train.append(np.array(list(img.getdata())).reshape((ysize, xsize, -1)))
+        x_train.append(np.array(list(img.getdata()), dtype=float).reshape((y_size, x_size, -1)))
         y_train.append([0,0])
 
     x_train = np.array(x_train)
@@ -212,7 +213,6 @@ def create_dataset(xSize=320, ySize=240, directory='dataset/'):
 if __name__ == '__main__':
     path = getDataDirectory('DATA/Train/GD')
     x_train, y_train = create_dataset(320, 240, directory=path)
-    assert(x_train.shape[0]>0)
 
     # turn training dataset into floats
     x_train /= 255 
@@ -221,4 +221,4 @@ if __name__ == '__main__':
                   channels = x_train[0].shape[2], 
                   latent_dim=32,
                   name='grateful_dead')
-    dcgan.train(x_train, epochs=EPOCHS, batch_size=32, save_interval=50)
+    dcgan.train(x_train, epochs=EPOCHS, batch_size=32, save_interval=25)

@@ -40,3 +40,11 @@ Next we need to turn the audio into the correct format (in our case, 320 x 240 M
 Finally you can train the discriminator. Run ```discriminator.py```. This will also take some time. At the end, a file *grateful-dead.h5* will be created - this will be the trained neural net.
 
 Currently I find that it generally does not take many epochs to be 90% accurate, but more testing is needed.
+
+
+## For Training the GANS
+
+* Add Tkinter: ```sudo apt-get install python3-tk```
+* Ensure that all the steps above have been run for data preperation (everything up to running the discriminator).
+* Create a folder OUTPUT in the data directory
+* Run ```gans.py```. This will take some considerable time.
