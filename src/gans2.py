@@ -81,6 +81,8 @@ def plotImages(epoch, generator, examples=100, dim=(10, 10), figsize=(10, 10)):
 		plt.axis('off')
 	plt.tight_layout()
 	plt.savefig('generated_{0}.png'.format(epoch))
+	plt.close('all')
+
 
 
 def training(epochs=1, batch_size=128):
@@ -119,4 +121,4 @@ def training(epochs=1, batch_size=128):
 
 
 if __name__ == '__main__':
-	training(400, 128)
+	training(100, 128)

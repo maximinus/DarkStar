@@ -13,7 +13,7 @@ from helpers import getDataDirectory, getAllFiles
 IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
 BATCH_SIZE = 16
-EPOCHS = 5
+EPOCHS = 10
 
 def getSimpleModel():
 	model = Sequential()
