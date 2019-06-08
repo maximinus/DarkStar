@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 
 import os
-from tqdm import tqdm
 import shutil
 from pydub import AudioSegment
 
-from mel import createMelImage
-from constants import TIMESLICE, TIME_DELTA, TMP_FOLDER
+# length of each slice in milliseconds
+TIMESLICE = 10000
+# difference of time between samples
+TIME_DELTA = 2000
+
+SLICES_FOLDER = 'SLICES'
+MEL_FOLDER = 'MEL'
+TMP_FOLDER = 'TMP'
+WAV_FOLDER = 'WAV'
 
 
 def getRootDirectory():
@@ -14,8 +20,10 @@ def getRootDirectory():
 	# get the folder this file lives in
 	try:
 		filepath = os.path.dirname(os.path.realpath(__file__))
-		filepath = os.path.join(filepath, '../')
 		# the root folder is 2 folders above this
+		filepath = os.path.join(filepath, '../')
+		filepath = os.path.join(filepath, '../')
+		filepath = os.path.join(filepath, '../')
 		return os.path.normpath(filepath)
 	except:
 		return ''
@@ -66,23 +74,3 @@ def sliceAsWav(wav_file, output_folder):
 def getStringName(index):
 	number = str(index)
 	return '{0}{1}'.format('0' * (6 - len(number)), number)
-
-
-def sliceAndConvert(root_folder, mel_folder):
-	print('* Root: {0}'.format(root_folder))
-	print('* Dest: {0}'.format(mel_folder))
-	tmp_folder = getDataDirectory(TMP_FOLDER)
-	file_count = 0
-	# clear the output directory
-	clearDirectory(mel_folder)
-	# get the actual WAV files themselves
-	for i in tqdm(getAllFiles(root_folder)):
-		print('  * Converting {0} to MEL format time slices'.format(i.split('/')[-1]))
-		clearDirectory(tmp_folder)
-		sliceAsWav(i, tmp_folder)
-		for j in tqdm(getAllFiles(tmp_folder)):
-			# convert each WAV to a MEL
-			filename = '{0}/{1}.png'.format(mel_folder, getStringName(file_count))
-			createMelImage(j, filename)
-			# update the output filename
-			file_count += 1
