@@ -7,7 +7,7 @@ from pydub import AudioSegment
 # length of each slice in milliseconds
 TIMESLICE = 10000
 # difference of time between samples
-TIME_DELTA = 2000
+TIME_DELTA = 4000
 
 SLICES_FOLDER = 'SLICES'
 MEL_FOLDER = 'MEL'
@@ -59,18 +59,26 @@ def clearDirectory(path):
 	os.mkdir(path)
 
 
-def sliceAsWav(wav_file, output_folder):
-	file_index = 0
+def sliceAsWav(wav_file, output_folder, index, time=TIMESLICE):
 	sound = AudioSegment.from_file(wav_file, format='wav')
 	duration = len(sound)
 	total_slices = (len(sound) - TIMESLICE) // TIME_DELTA
 	for i in range(total_slices):
 		start_time = i * TIME_DELTA
 		new_slice = sound[start_time:start_time + TIMESLICE]
-		new_slice.export('{0}/{1}.wav'.format(output_folder, getStringName(file_index)), format='wav')
-		file_index += 1
+		new_slice.export('{0}/{1}.wav'.format(output_folder, getStringName(index)), format='wav')
+		index += 1
+	return index
 
 
 def getStringName(index):
 	number = str(index)
 	return '{0}{1}'.format('0' * (6 - len(number)), number)
+
+
+def convertWavFormat(filename, output_dir, frequency, channels, bytes_per_value, index):
+	sound = AudioSegment.from_file(filename, format='wav')
+	sound = sound.set_frame_rate(frequency)
+	sound = sound.set_channels(channels)
+	sound = sound.set_sample_width(bytes_per_value)
+	sound.export('{0}/{1}.raw'.format(output_dir, getStringName(index)), format="raw")
