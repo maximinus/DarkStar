@@ -28,7 +28,7 @@ TEST_SET = 0.2
 
 # how may files in total to use
 # set to -1 for all files
-MAX_FILES = 10
+MAX_FILES = 100
 
 
 def getModel():
@@ -94,22 +94,21 @@ if __name__ == '__main__':
     model = getModel()
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     print(model.summary())
-    print('\nInput Layer:')
-    print(model.layers[0].input_shape)
 
     x_train = np.array([x[0] for x in train_data])
     y_train = np.array([x[1] for x in train_data])
     x_test = np.array([x[0] for x in test_data])
     y_test = np.array([x[1] for x in test_data])
-
-    x_test = to_categorical(x_test, NUMBER_OF_CLASSES)
+    
+    x_train = np.expand_dims(x_train, axis=2)
+    x_test = np.expand_dims(x_test, axis=2)
+    y_train = to_categorical(y_train, NUMBER_OF_CLASSES)
     y_test = to_categorical(y_test, NUMBER_OF_CLASSES)
 
-    x_train = [np.expand_dims(x, axis=1) for x in x_train]
-    x_test = [np.expand_dims(x, axis=1) for x in x_test]
-
-    print('Training Data:')
-    print(x_train[0].shape)
+    print('X train: {0}'.format(x_train.shape))
+    print('Y train: {0}'.format(y_train.shape))
+    print('X test: {0}'.format(x_test.shape))
+    print('Y test: {0}'.format(y_test.shape))
 
     model.fit(x_train,
               y_train,
