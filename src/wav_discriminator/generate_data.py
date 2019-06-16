@@ -11,9 +11,9 @@ from darkstar.helpers import *
 # the format we require is a MONO 22.05kHz 16-bit 8 second file
 # this is 22050 * 2 * 10 bytes = 441000
 
-MAX_FILES = 2000
+MAX_FILES = 200
 
-def sliceFileAndConvert():
+def sliceFilesAndConvert():
 	# get the data directory
 	sbd = getDataDirectory('ORIGINAL/SBD_AUD/SBD')
 	aud = getDataDirectory('ORIGINAL/SBD_AUD/AUD')
@@ -95,5 +95,5 @@ def convertToNumpy():
 
 
 if __name__ == '__main__':
-	#sliceAndConvert()
+	#sliceFilesAndConvert()
 	convertToNumpy()

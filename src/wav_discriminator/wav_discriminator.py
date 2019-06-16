@@ -63,12 +63,22 @@ def getModel():
     return(model)
 
 
-if __name__ == '__main__':
+def initRandomSeeds():
     # start with same seed
     random.seed(RANDOM_SEED)
     np.random.seed(RANDOM_SEED)
     set_random_seed(RANDOM_SEED)
-    # let's load the data
+
+
+class DataSet:
+    def __init__(xtrain, ytrain, xtest, ytest):
+        self.xtrain = xtrain
+        self.ytrain = ytrain
+        self.xtest = xtest
+        self.ytest = ytest
+
+
+def getData():
     # we need an array of questions, and one of answers
     sbd_source = getDataDirectory('PROCESSED_WAV/SBD_NUMPY')
     aud_source = getDataDirectory('PROCESSED_WAV/AUD_NUMPY')
@@ -90,11 +100,6 @@ if __name__ == '__main__':
     test_data = questions[:data_split]
     train_data = questions[data_split:]
 
-    # then we need the model
-    model = getModel()
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    print(model.summary())
-
     x_train = np.array([x[0] for x in train_data])
     y_train = np.array([x[1] for x in train_data])
     x_test = np.array([x[0] for x in test_data])
@@ -105,15 +110,22 @@ if __name__ == '__main__':
     y_train = to_categorical(y_train, NUMBER_OF_CLASSES)
     y_test = to_categorical(y_test, NUMBER_OF_CLASSES)
 
-    print('X train: {0}'.format(x_train.shape))
-    print('Y train: {0}'.format(y_train.shape))
-    print('X test: {0}'.format(x_test.shape))
-    print('Y test: {0}'.format(y_test.shape))
+    return(DataSet(x_train, y_train, x_test, y_test))
 
-    model.fit(x_train,
-              y_train,
+
+if __name__ == '__main__':
+    initRandomSeeds()
+    data = getData()
+
+    # then we need the model
+    model = getModel()
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    print(model.summary())
+
+    model.fit(data.x_train,
+              data.y_train,
               batch_size=BATCH_SIZE,
               epochs=100,
               verbose=1,
               shuffle=True,
-              validation_data=(x_test, y_test))
+              validation_data=(data.x_test, data.y_test))
