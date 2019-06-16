@@ -11,8 +11,6 @@ from darkstar.helpers import *
 # the format we require is a MONO 22.05kHz 16-bit 8 second file
 # this is 22050 * 2 * 10 bytes = 441000
 
-MAX_FILES = 200
-
 def sliceFilesAndConvert():
 	# get the data directory
 	sbd = getDataDirectory('ORIGINAL/SBD_AUD/SBD')
@@ -61,7 +59,7 @@ def convertToNumpy():
 	
 	print('Converting SBD to Numpy from {0}'.format(sbd_in))
 	index = 0
-	for filename in tqdm(getAllFiles(sbd_in, extension='raw')[:MAX_FILES]):
+	for filename in tqdm(getAllFiles(sbd_in, extension='raw')):
 		# load
 		np_data = np.fromfile(filename, dtype='int16')
 		# convert to float
@@ -78,7 +76,7 @@ def convertToNumpy():
 
 	print('Converting AUD to Numpy from {0}'.format(aud_in))
 	index = 0
-	for filename in tqdm(getAllFiles(aud_in, extension='raw')[:MAX_FILES]):
+	for filename in tqdm(getAllFiles(aud_in, extension='raw')):
 		# load
 		np_data = np.fromfile(filename, dtype='int16')
 		# convert to float
@@ -95,5 +93,5 @@ def convertToNumpy():
 
 
 if __name__ == '__main__':
-	#sliceFilesAndConvert()
+	sliceFilesAndConvert()
 	convertToNumpy()

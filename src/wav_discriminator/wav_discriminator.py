@@ -28,7 +28,7 @@ TEST_SET = 0.2
 
 # how may files in total to use
 # set to -1 for all files
-MAX_FILES = 100
+MAX_FILES = 4000
 
 
 def getModel():
@@ -71,11 +71,11 @@ def initRandomSeeds():
 
 
 class DataSet:
-    def __init__(xtrain, ytrain, xtest, ytest):
-        self.xtrain = xtrain
-        self.ytrain = ytrain
-        self.xtest = xtest
-        self.ytest = ytest
+    def __init__(self, xtrain, ytrain, xtest, ytest):
+        self.x_train = xtrain
+        self.y_train = ytrain
+        self.x_test = xtest
+        self.y_test = ytest
 
 
 def getData():
@@ -85,14 +85,16 @@ def getData():
     questions = []
 
     print('Loading SBD files')
-    for file in tqdm(getAllFiles(sbd_source, extension='npy')[:MAX_FILES]):
+    for file in tqdm(getAllFiles(sbd_source, extension='npy')):
         sound_data = np.load(file)
         questions.append([sound_data, 1.0])
 
     print('Loading AUD files')
-    for file in tqdm(getAllFiles(aud_source, extension='npy')[:MAX_FILES]):
+    for file in tqdm(getAllFiles(aud_source, extension='npy')):
         sound_data = np.load(file)
         questions.append([sound_data, 0.0])
+
+    print('\nLoaded {0} tests\n'.format(len(questions)))
 
     # shuffle and split
     random.shuffle(questions)
