@@ -28,7 +28,7 @@ TEST_SET = 0.2
 
 # how may files in total to use
 # set to -1 for all files
-MAX_FILES = 4000
+MAX_FILES = 2000
 
 
 def getModel():
