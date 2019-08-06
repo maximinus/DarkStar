@@ -1,0 +1,6 @@
+With environment setup, cd into this directory and enter:
+
+pip install -e .
+
+Changes to the code update automatically.
+
