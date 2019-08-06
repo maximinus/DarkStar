@@ -85,12 +85,12 @@ def getData():
     questions = []
 
     print('Loading SBD files')
-    for file in tqdm(getAllFiles(sbd_source, extension='npy')):
+    for file in tqdm(getAllFiles(sbd_source, extension='npy')[:MAX_FILES]):
         sound_data = np.load(file)
         questions.append([sound_data, 1.0])
 
     print('Loading AUD files')
-    for file in tqdm(getAllFiles(aud_source, extension='npy')):
+    for file in tqdm(getAllFiles(aud_source, extension='npy')[:MAX_FILES]):
         sound_data = np.load(file)
         questions.append([sound_data, 0.0])
 
