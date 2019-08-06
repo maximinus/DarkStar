@@ -24,29 +24,30 @@ def sliceFilesAndConvert():
 	clearDirectory(ng_out)
 	clearDirectory(slice_dir)
 
-	print('Slicing SBDS')
+	print('Slicing GD')
 	index = 0
-	for sbd_file in tqdm(getAllFiles(sbd)):
-		index = sliceAsWav(sbd_file, slice_dir, index)
+	for gd_file in tqdm(getAllFiles(gd_files)):
+		index = sliceAsWav(gd_file, slice_dir, index)
 
-	print('Converting SBDS')
+	print('Converting GD')
 	index = 0
-	for sbd_file in tqdm(getAllFiles(slice_dir)):
+	for gd_file in tqdm(getAllFiles(slice_dir)):
 		# 22.05kHz mono 16-bit
-		convertWavFormat(sbd_file, sbd_out, 22050, 1, 2, index)
+		convertWavFormat(gd_file, gd_out, 22050, 1, 2, index)
 		index += 1
 	clearDirectory(slice_dir)
 
-	print('Slicing AUDS')
+	print('Slicing Other')
 	index = 0
-	for aud_file in tqdm(getAllFiles(aud)):
-		index = sliceAsWav(aud_file, slice_dir, index)
-	print('Converting AUDS')
+	for ng_file in tqdm(getAllFiles(ng_files)):
+		index = sliceAsWav(ng_file, slice_dir, index)
+	print('Converting Other')
 	index = 0
-	for aud_file in tqdm(getAllFiles(slice_dir)):
+	for ng_file in tqdm(getAllFiles(slice_dir)):
 		# 22.05kHz mono 16-bit
-		convertWavFormat(aud_file, aud_out, 22050, 1, 2, index)
+		convertWavFormat(ng_file, ng_out, 22050, 1, 2, index)
 		index += 1
+	# cleanup unused files
 	clearDirectory(slice_dir)
 
 
@@ -55,6 +56,8 @@ def convertToNumpy():
 	ng_in = getDataDirectory('PROCESSED_WAV/OTHER')	
 	gd_out = getDataDirectory('PROCESSED_WAV/GD_NUMPY')
 	ng_out = getDataDirectory('PROCESSED_WAV/OTHER_NUMPY')
+
+	# clear output directories
 	clearDirectory(gd_out)
 	clearDirectory(ng_out)
 	
