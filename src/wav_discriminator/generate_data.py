@@ -97,5 +97,5 @@ def convertToNumpy():
 
 
 if __name__ == '__main__':
-	#sliceFilesAndConvert()
+	sliceFilesAndConvert()
 	convertToNumpy()
