@@ -80,8 +80,8 @@ class DataSet:
 
 def getData():
     # we need an array of questions, and one of answers
-    sbd_source = getDataDirectory('PROCESSED_WAV/SBD_NUMPY')
-    aud_source = getDataDirectory('PROCESSED_WAV/AUD_NUMPY')
+    sbd_source = getDataDirectory('PROCESSED_WAV/GD_NUMPY')
+    aud_source = getDataDirectory('PROCESSED_WAV/OTHER_NUMPY')
     questions = []
 
     print('Loading SBD files')
