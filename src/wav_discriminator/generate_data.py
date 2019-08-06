@@ -13,14 +13,15 @@ from darkstar.helpers import *
 
 def sliceFilesAndConvert():
 	# get the data directory
-	sbd = getDataDirectory('ORIGINAL/SBD_AUD/SBD')
-	aud = getDataDirectory('ORIGINAL/SBD_AUD/AUD')
+	gd_files = getDataDirectory('WAV/GRATEFUL_DEAD')
+	ng_files = getDataDirectory('WAV/OTHER')
 	slice_dir = getDataDirectory('SLICES')
-	sbd_out = getDataDirectory('PROCESSED_WAV/SBD')
-	aud_out = getDataDirectory('PROCESSED_WAV/AUD')
+	gd_out = getDataDirectory('PROCESSED_WAV/GD')
+	ng_out = getDataDirectory('PROCESSED_WAV/OTHER')
 
-	clearDirectory(sbd_out)
-	clearDirectory(aud_out)
+	# clear all output directories
+	clearDirectory(gd_out)
+	clearDirectory(ng_out)
 	clearDirectory(slice_dir)
 
 	print('Slicing SBDS')
@@ -50,12 +51,12 @@ def sliceFilesAndConvert():
 
 
 def convertToNumpy():
-	sbd_in = getDataDirectory('PROCESSED_WAV/SBD')
-	aud_in = getDataDirectory('PROCESSED_WAV/AUD')	
-	sbd_out = getDataDirectory('PROCESSED_WAV/SBD_NUMPY')
-	aud_out = getDataDirectory('PROCESSED_WAV/AUD_NUMPY')
-	clearDirectory(sbd_out)
-	clearDirectory(aud_out)
+	gd_in = getDataDirectory('PROCESSED_WAV/GD')
+	ng_in = getDataDirectory('PROCESSED_WAV/OTHER')	
+	gd_out = getDataDirectory('PROCESSED_WAV/GD_NUMPY')
+	ng_out = getDataDirectory('PROCESSED_WAV/OTHER_NUMPY')
+	clearDirectory(gd_out)
+	clearDirectory(ng_out)
 	
 	print('Converting SBD to Numpy from {0}'.format(sbd_in))
 	index = 0

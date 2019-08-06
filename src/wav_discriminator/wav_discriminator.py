@@ -17,7 +17,7 @@ from tqdm import tqdm
 import random
 
 
-# 8 seconds of 22.05kHz
+# 10 seconds of 22.05kHz
 AUDIO_LENGTH = 22050 * 10
 NUMBER_OF_CLASSES = 2
 RANDOM_SEED = 1234
@@ -33,7 +33,7 @@ MAX_FILES = 4000
 
 def getModel():
     model = Sequential()
-    model.add(Conv1D(128, input_shape=[AUDIO_LENGTH, 1], kernel_size=80, strides=4,
+    model.add(Conv1D(128, input_shape=[AUDIO_LENGTH, 1], kernel_size=8, strides=4,
                      padding='same', kernel_initializer='glorot_uniform',
                      kernel_regularizer=regularizers.l2(l=0.0001)))
     model.add(BatchNormalization())
