@@ -61,9 +61,9 @@ def convertToNumpy():
 	clearDirectory(gd_out)
 	clearDirectory(ng_out)
 	
-	print('Converting SBD to Numpy from {0}'.format(sbd_in))
+	print('Converting SBD to Numpy from {0}'.format(gd_in))
 	index = 0
-	for filename in tqdm(getAllFiles(sbd_in, extension='raw')):
+	for filename in tqdm(getAllFiles(gd_in, extension='raw')):
 		# load
 		np_data = np.fromfile(filename, dtype='int16')
 		# convert to float
@@ -73,14 +73,14 @@ def convertToNumpy():
 		float_data /= 65535
 		assert ((float_data <= 1.0).all() and (float_data >= 0.0).all())
 		# now we save the data
-		save_file = '{0}/{1}.npy'.format(sbd_out, getStringName(index))
+		save_file = '{0}/{1}.npy'.format(gd_out, getStringName(index))
 		np.save(save_file, float_data)
 		index += 1
-	print('Written {0} files to {1}'.format(index, sbd_out))
+	print('Written {0} files to {1}'.format(index, gd_out))
 
-	print('Converting AUD to Numpy from {0}'.format(aud_in))
+	print('Converting AUD to Numpy from {0}'.format(ng_in))
 	index = 0
-	for filename in tqdm(getAllFiles(aud_in, extension='raw')):
+	for filename in tqdm(getAllFiles(ng_in, extension='raw')):
 		# load
 		np_data = np.fromfile(filename, dtype='int16')
 		# convert to float
@@ -90,12 +90,12 @@ def convertToNumpy():
 		float_data /= 65535
 		assert ((float_data <= 1.0).all() and (float_data >= 0.0).all())
 		# now we save the data
-		save_file = '{0}/{1}.npy'.format(aud_out, getStringName(index))
+		save_file = '{0}/{1}.npy'.format(ng_out, getStringName(index))
 		np.save(save_file, float_data)
 		index += 1
-	print('Written {0} files to {1}'.format(index, aud_out))
+	print('Written {0} files to {1}'.format(index, ng_out))
 
 
 if __name__ == '__main__':
-	sliceFilesAndConvert()
+	#sliceFilesAndConvert()
 	convertToNumpy()
