@@ -21,8 +21,8 @@ class ReportData:
 		self.saveData()
 
 	def saveData(self):
-		with open(self.filename) as json_file:
-			json.dump(self.epochs, json_file)
+		with open(self.filename, 'w') as json_file:
+			json.dump(self.epochs, json_file, indent=4)
 
 
 class Recorder(Callback):
