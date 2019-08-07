@@ -12,7 +12,9 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Sequential
 from tensorflow import set_random_seed
 import numpy as np
+
 from darkstar.helpers import *
+from darkstar.recorder import Recorder
 from tqdm import tqdm
 import random
 
@@ -28,7 +30,7 @@ TEST_SET = 0.2
 
 # how may files in total to use
 # set to -1 for all files
-MAX_FILES = 2000
+MAX_FILES = 20
 
 
 def getModel():
@@ -130,4 +132,5 @@ if __name__ == '__main__':
               epochs=100,
               verbose=1,
               shuffle=True,
-              validation_data=(data.x_test, data.y_test))
+              validation_data=(data.x_test, data.y_test),
+              callbacks=[Recorder()])
