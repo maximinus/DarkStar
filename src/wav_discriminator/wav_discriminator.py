@@ -86,12 +86,12 @@ def getData():
     aud_source = getDataDirectory('PROCESSED_WAV/OTHER_NUMPY')
     questions = []
 
-    print('Loading SBD files')
+    print('Loading Grateful Dead files')
     for file in tqdm(getAllFiles(sbd_source, extension='npy')[:MAX_FILES]):
         sound_data = np.load(file)
         questions.append([sound_data, 1.0])
 
-    print('Loading AUD files')
+    print('Loading non-Dead files')
     for file in tqdm(getAllFiles(aud_source, extension='npy')[:MAX_FILES]):
         sound_data = np.load(file)
         questions.append([sound_data, 0.0])
@@ -115,6 +115,12 @@ def getData():
     y_test = to_categorical(y_test, NUMBER_OF_CLASSES)
 
     return(DataSet(x_train, y_train, x_test, y_test))
+
+
+def generateData():
+    while True:
+        # constantly yields a collection of data
+        pass
 
 
 if __name__ == '__main__':

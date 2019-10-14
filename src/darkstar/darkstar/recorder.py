@@ -15,7 +15,7 @@ class ReportData:
 		self.epochs = []
 
 	def addEpoch(self, epoch, logs):
-		# epoch is what number we are on
+		# epoch is what number epoch we are on
 		# logs is a dictionary of data
 		self.epochs.append(logs)
 		self.saveData()
