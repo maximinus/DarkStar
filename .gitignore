@@ -104,7 +104,12 @@ venv.bak/
 .mypy_cache/
 
 # project folders
-data/
 pyenv/
 tmp/
+mount/
+blog/
 
+# sound files
+*.wav
+*.mp3
+*.raw
