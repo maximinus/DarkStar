@@ -146,4 +146,5 @@ if __name__ == '__main__':
 	# now start the process
 	files = getFiles(args)
 	files = convertPaths(files, args)
-	convertFiles(files, args)
+	print(files)
+	#convertFiles(files, args)

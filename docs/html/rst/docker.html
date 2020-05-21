@@ -14,6 +14,7 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Preparing Audio" href="audio.html" />
     <link rel="prev" title="Project Goals" href="goals.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -22,6 +23,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="audio.html" title="Preparing Audio"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="goals.html" title="Project Goals"
              accesskey="P">previous</a> |</li>
@@ -32,14 +36,19 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Tensorflow Docker Instructions</a></li>
+<li><a class="reference internal" href="#">Tensorflow Docker Instructions</a><ul>
 <li><a class="reference internal" href="#building-a-container">Building a container</a></li>
 <li><a class="reference internal" href="#running-code-inside-a-docker-container">Running Code Inside a Docker container</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="goals.html"
                         title="previous chapter">Project Goals</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="audio.html"
+                        title="next chapter">Preparing Audio</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -81,9 +90,8 @@
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-</div>
 <div class="section" id="building-a-container">
-<h1>Building a container<a class="headerlink" href="#building-a-container" title="Permalink to this headline">¶</a></h1>
+<h2>Building a container<a class="headerlink" href="#building-a-container" title="Permalink to this headline">¶</a></h2>
 <p>Build a new container, run and mount image:</p>
 <blockquote>
 <div><p>docker build -t {name} .
@@ -99,7 +107,7 @@ docker exec -it {container_name} bash</p>
 </div>
 </div>
 <div class="section" id="running-code-inside-a-docker-container">
-<h1>Running Code Inside a Docker container<a class="headerlink" href="#running-code-inside-a-docker-container" title="Permalink to this headline">¶</a></h1>
+<h2>Running Code Inside a Docker container<a class="headerlink" href="#running-code-inside-a-docker-container" title="Permalink to this headline">¶</a></h2>
 <p>1: Build a container as shown above</p>
 <p>2: You can view current machines with</p>
 <blockquote>
@@ -118,6 +126,7 @@ docker exec -it machine1 bash</p>
 <div class="line"><br /></div>
 </div>
 </div>
+</div>
 
 
           </div>
@@ -131,6 +140,9 @@ docker exec -it machine1 bash</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="audio.html" title="Preparing Audio"
+             >next</a> |</li>
         <li class="right" >
           <a href="goals.html" title="Project Goals"
              >previous</a> |</li>

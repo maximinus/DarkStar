@@ -20,6 +20,7 @@ Currently this project uses the Tensoflow machine learning library.
 
    rst/goals.rst
    rst/docker.rst
+   rst/audio.rst
 
 |
 

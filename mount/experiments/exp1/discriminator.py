@@ -4,6 +4,8 @@ import tensorflow as tf
 from tensorflow.keras.layers import Conv1D, Dense, Dropout
 import numpy as np
 
+import darkstar.helpers
+
 TOTAL_CLASSES = 1
 
 def getData():

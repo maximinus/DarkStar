@@ -8,7 +8,7 @@ Understandably, this is quite tricky so the short term goals are a little simple
 |
 
 Short Term Goals
-================
+----------------
 
 The current short term goals of the project are:
 

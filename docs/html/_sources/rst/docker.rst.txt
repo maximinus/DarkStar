@@ -14,7 +14,7 @@ We need to mount a directory that we can edit from outside the container:
 |
 
 Building a container
-====================
+--------------------
 
 Build a new container, run and mount image:
 
@@ -29,7 +29,7 @@ Second time, exec instead:
 |
 
 Running Code Inside a Docker container
-======================================
+--------------------------------------
 
 1: Build a container as shown above
 
