@@ -106,7 +106,7 @@ venv.bak/
 # project folders
 pyenv/
 tmp/
-mount/
+udemy/
 blog/
 
 # sound files
