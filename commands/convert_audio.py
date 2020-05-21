@@ -14,8 +14,8 @@ INPUT_FILES = ['wav']
 BYTES_PER_VALUE = 2
 BITRATE = 16384
 
-def logError(text, exit=False):
-	print('* Error: {0}'.format(text))
+def logError(text, exit=True):
+	print(f'  Error: {text}')
 	if exit == True:
 		sys.exit()
 
@@ -23,61 +23,74 @@ def getArguments():
 	parser = argparse.ArgumentParser(description='Convert audio')
 	parser.add_argument('--bitrate', type=int, default=BITRATE, help='Output bitrate')
 	parser.add_argument('--stereo', action='store_true', help='Output stereo')
-	parser.add_argument('--split', type=int, default=0, help='Split in timed files')
+	parser.add_argument('--split', type=int, default=0, help='Split into timed files')
 	parser.add_argument('--recursive', action='store_true', help='Recurse through input')
-	parser.add_argument('infile', nargs='?', type=str, default='')
-	parser.add_argument('outfile', nargs='?', type=str, default='')
+	parser.add_argument('infolder', nargs='?', type=str, default='', help='Input folder')
+	parser.add_argument('outfolder', nargs='?', type=str, default='', help='Output folder')
 	args = parser.parse_args()
 	return(args)
 
 def checkArguments(args):
-	if len(args.infile) == 0:
-		print('No input specified', True)
-	if len(args.outfile) == 0:
-		print('No output folder specified')
+	if len(args.infolder) == 0:
+		logError('No input specified')
+	if len(args.outfolder) == 0:
+		logError('No output folder specified')
 
 def getFiles(args):
 	# folder or file exists?
-	if not os.path.exists(args.infile):
-		logError('Input path {0} does not exist'.format(args.infile), True)
-	if os.path.isfile(args.infile):
+	if not os.path.exists(args.infolder):
+		logError('Input path {args.infile} does not exist')
+	if os.path.isfile(args.infolder):
 		# must end with the right extension
 		if args.infile[-3:].lower() in INPUT_FILES:
-			return [os.path.dirname(args.infile), args.infile]
-		logError('Input file is not a valid format', True)
-	print('* Extracting files from {0}'.format(args.infile))
+			return [os.path.dirname(args.infolder), args.infolder]
+		logError('Input file is not a valid format')
+	print('  Extracting files from {0}'.format(args.infolder))
 	# must be a directory: are we recursive or not?
 	files = []
 	if args.recursive == False:
 		# loop through all files and return them
-		files = [x for x in os.listdir(args.infile) if os.path.isfile(os.path.join(args.infile, x))]
+		files = [x for x in os.listdir(args.infolder) if os.path.isfile(os.path.join(args.infolder, x))]
 	else:
+		print('All files')
 		# recurse to get all files
-		for root, dnames, fnames in os.walk(args.infile):
+		for root, dnames, fnames in os.walk(args.infolder):
 			for f in fnames:
 				files.append(os.path.join(root, f))
 	# remove files we don'r care about
 	files = [x for x in files if x[-3:].lower() in INPUT_FILES]
-	files.insert(0, args.infile)
+	files.insert(0, args.infolder)
 	return files
+
+def addFolderIfRequired(filepath):
+	folder = os.path.dirname(filepath)
+	if os.path.exists(folder):
+		# check not a file
+		if not os.path.isdir(folder):
+			logError(f'Output folder {folder} is a file')
+		return
+	os.mkdir(folder)
 
 def convertPaths(files, args):
 	# the first file is the input dir, so remove that
 	input_dir = files.pop(0)
 	# we have a list of files for input
 	# calculate the output for each of these (it'll be the output folder)
-	if os.path.exists(args.outfile):
+	if os.path.exists(args.outfolder):
 		# make sure it is not a file
-		if os.path.isfile(args.outfile):
+		if os.path.isfile(args.outfolder):
 			logError('Output path cannot be a file')
+	else:
+		logError('Output folder does not exist')
 	# calculate the output path
 	paths = []
-	normal_path = os.path.normpath(args.outfile)
+	normal_path = os.path.normpath(args.outfolder)
 	for i in files:
 		# we need to calculate the output file
 		# we need to remove the matching path from the input file
-		write_path = '{0}/{1}.raw'.format(normal_path, i[len(input_dir) + 1:-4])
+		write_path = '{0}/{1}.raw'.format(normal_path, i[len(input_dir):-4])
 		# convert extension to raw
+		addFolderIfRequired(write_path)
 		paths.append([i, write_path])
 	return paths
 
@@ -124,11 +137,6 @@ def convertFiles(files, args):
 	for i in tqdm(files):
 		convertSingleFile(i, args)
 
-def normaliseFiles(files):
-	print('* Normalising {0} files'.format(len(files)))
-	files.insert(0, 'normalize-audio')
-	subprocess.run(files)
-
 def test():
 	time = 4 * 1000
 	sound = AudioSegment.from_file('test.wav', format='wav')
@@ -146,5 +154,4 @@ if __name__ == '__main__':
 	# now start the process
 	files = getFiles(args)
 	files = convertPaths(files, args)
-	print(files)
-	#convertFiles(files, args)
+	convertFiles(files, args)
