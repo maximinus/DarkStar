@@ -108,6 +108,7 @@ pyenv/
 tmp/
 udemy/
 blog/
+html/
 
 # sound files
 *.wav
