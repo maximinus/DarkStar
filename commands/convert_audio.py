@@ -99,8 +99,10 @@ def convertToRaw(input_file, output_file, bitrate, stereo=False):
 	sound = sound.set_frame_rate(bitrate)
 	if stereo == True:
 		sound = sound.set_channels(2)
+		print('  Outputting as stereo')
 	else:
 		sound = sound.set_channels(1)
+		print('  Outputting as mono')
 	sound = sound.set_sample_width(BYTES_PER_VALUE)
 	sound.export(output_file, format='raw')
 

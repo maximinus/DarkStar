@@ -1,19 +1,40 @@
 #!/usr/bin/env python
 
+# The audio files are stored this way:
+# 4096 samples per second, 2 seconds of audio, 2 bytes per sample
+# 4096 * 2 * 2 = 16384
+# In this experiment, the input is a 4096 array with 16-bit values -> 8192 bytes
+# this gets turned into floats, so an array of 4096 floats
+
+# try and reduce console noise
+import warnings
+warnings.filterwarnings("ignore")
+
+import os
 import tensorflow as tf
 from tensorflow.keras.layers import Conv1D, Dense, Dropout
 import numpy as np
 
-import darkstar.helpers
+from darkstar import helpers
 
 TOTAL_CLASSES = 1
 
+AUD_SLICES = 'music/slices/aud'
+SBD_SLICES = 'music/slices/sbd'
+
+def loadAllFiles(folder):
+    # ensure fodler exists
+    if not is.path.isdir(folder):
+        helpers.logError(f'{folder} is not a valid folder')
+    # recurse to get all raw files here
+    return helpers.getAllFiles(folder, extension='raw')
+
 def getData():
-    # return the data our network requires
-    # for 4 items we need a shape of (4, 1) -> 4 items of length 1 each
-    # NOTE: to do this with an array you need np.array([[1], [1], [1], [1]])
-    data = np.ones((12, 1))
-    return(data)
+    # load everything as a dataset, since it will fit into memory
+    root_folder = helpers.getRootDirectory()
+    aud_files = loadAllFiles(os.path.join(root_folder, AUD_SLICES))
+    sbd_files = loadAllFiles(os.path.join(root_folder, SBD_SLICES))
+    return [aud_files, sbd_files]
 
 def getDiscriminator():
     model = tf.keras.models.Sequential()
@@ -30,6 +51,8 @@ def getDiscriminator():
 
 if __name__ == '__main__':
     data = getData()
+    sys.exit()
+
     print(f'Data shape: {data.shape}')
     model = getDiscriminator()
     model.summary()

@@ -15,13 +15,17 @@ TMP_FOLDER = 'TMP'
 WAV_FOLDER = 'WAV'
 
 
+def logError(message):
+	print(f'  Error: {message}')
+	sys.exit(False)
+
+
 def getRootDirectory():
 	# return the root folder, or '' if we could not find it
 	# get the folder this file lives in
 	try:
 		filepath = os.path.dirname(os.path.realpath(__file__))
 		# the root folder is 2 folders above this
-		filepath = os.path.join(filepath, '../')
 		filepath = os.path.join(filepath, '../')
 		filepath = os.path.join(filepath, '../')
 		return os.path.normpath(filepath)
