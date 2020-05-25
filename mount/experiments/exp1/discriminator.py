@@ -17,7 +17,7 @@ import sys
 from tqdm import tqdm
 import random
 import tensorflow as tf
-from tensorflow.keras.layers import Conv1D, Dense, Dropout, Flatten
+from tensorflow.keras.layers import Conv1D, Dense, Dropout, Flatten, Activation, MaxPooling1D
 import numpy as np
 
 from darkstar import helpers
@@ -44,12 +44,14 @@ class ModelData:
         # then split data into groups
         check = int(len(all_data) * self.CHECK_RATIO)
         array = np.array([x[0] for x in all_data[check:]])
-        self.x_test = np.expand_dims(array, -1)
+        self.x_test = np.expand_dims(array, 2)
+        #self.x_test = array
         self.y_test = np.array([x[1] for x in all_data[check:]])
         self.y_test = self.y_test.astype(np.uint8)
 
-        array = [x[0] for x in all_data[:check]]
-        self.x_check = np.expand_dims(array, -1)
+        array = np.array([x[0] for x in all_data[:check]])
+        self.x_check = np.expand_dims(array, 2)
+        #self.x_check = array
         self.y_check = np.array([x[1] for x in all_data[:check]])
         self.y_check = self.y_check.astype(np.uint8)
 
@@ -85,13 +87,23 @@ def getData():
 def getDiscriminator():
     model = tf.keras.models.Sequential()
     # let's just have 1 single filter with a large skip
-    model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, padding="SAME"))
-    model.add(Dropout(0.2))
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.2))
-    model.add(Dense(TOTAL_CLASSES, activation='relu'))
+    model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=1, padding="SAME"))
+    model.add(Activation('relu'))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    model.add(Activation('relu'))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    model.add(Activation('relu'))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(Flatten()) 
+    model.add(Dense(32))
+    model.add(Activation('relu')) 
+    model.add(Dropout(0.5)) 
+    model.add(Dense(1)) 
+    model.add(Activation('sigmoid')) 
     model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
+                  loss='binary_crossentropy',
                   metrics=['accuracy'])
     return model
 

@@ -1,0 +1,41 @@
+
+Exp1:
+
+	1 layer: Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=4, padding="SAME"))
+
+		Strides = 1: acc: 0.6666 - val_loss: 4.9748
+		Strides = 2: acc: 0.6682 - val_loss: 5.0381
+		Strides = 4: acc: 0.6653 - val_loss: 4.8597
+		Strides = 8: acc: 0.6722 - val_loss: 5.2800
+
+	2: Added a Dropout(0.2) after the Conv1D
+
+		Strides = 1: acc: 0.3308 - val_loss: 10.252
+		Strides = 2: acc: 0.6669 - val_loss: 4.9691
+		Strides = 4: acc: 0.6673 - val_loss: 4.9978
+		Strides = 8: acc: 0.6688 - val_loss: 5.0842
+
+	3: Add 2 conv1d layers
+		acc: 0.6695 - val_loss: 5.1130
+
+	4: Changed network to this, based on image networks:
+
+		model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=1, padding="SAME"))
+    	model.add(Activation('relu'))
+    	model.add(MaxPooling1D(pool_size=2))
+    	model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    	model.add(Activation('relu'))
+    	model.add(MaxPooling1D(pool_size=2))
+    	model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    	model.add(Activation('relu'))
+    	model.add(MaxPooling1D(pool_size=2))
+    	model.add(Flatten())
+    	model.add(Dense(32))
+    	model.add(Activation('relu'))
+    	model.add(Dropout(0.5))
+    	model.add(Dense(1))
+    	model.add(Activation('sigmoid'))
+
+    	acc: 0.9298 - val_loss: 0.4367
+
+    
