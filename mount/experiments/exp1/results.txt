@@ -20,10 +20,10 @@ Exp1:
 
 	4: Changed network to this, based on image networks:
 
-		model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=1, padding="SAME"))
+		model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=1, padding="SAME"))
     	model.add(Activation('relu'))
     	model.add(MaxPooling1D(pool_size=2))
-    	model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    	model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
     	model.add(Activation('relu'))
     	model.add(MaxPooling1D(pool_size=2))
     	model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
@@ -38,4 +38,3 @@ Exp1:
 
     	acc: 0.9298 - val_loss: 0.4367
 
-    

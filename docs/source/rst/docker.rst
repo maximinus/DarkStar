@@ -5,6 +5,14 @@ Create a docker container, and run inside as user:
 
 	docker run -u $(id -u):$(id -g) --gpus all -it libs bash
 
+You can run
+
+	docker ps -a
+
+To view all current containers, or
+
+	docker
+
 |
 
 We need to mount a directory that we can edit from outside the container:
@@ -19,7 +27,7 @@ Building a container
 Build a new container, run and mount image:
 
 	docker build -t {name} .
-	docker run -u $(id -u):$(id -g) --gpus all -it -v /home/sparky/code/machine-learning/mount:/app {name} bash
+	docker run -u $(id -u):$(id -g) --gpus all -it -v /home/sparky/code/DarkStar:/app {name} bash
 
 Second time, exec instead:
 

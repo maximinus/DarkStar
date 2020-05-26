@@ -86,22 +86,21 @@ def getData():
 
 def getDiscriminator():
     model = tf.keras.models.Sequential()
-    # let's just have 1 single filter with a large skip
     model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=1, padding="SAME"))
     model.add(Activation('relu'))
     model.add(MaxPooling1D(pool_size=2))
-    model.add(Conv1D(32, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    model.add(Conv1D(32, kernel_size=2, dilation_rate=2, strides=1, padding="SAME"))
     model.add(Activation('relu'))
     model.add(MaxPooling1D(pool_size=2))
-    model.add(Conv1D(64, input_shape=(8192, 1), kernel_size=2, dilation_rate=1, strides=2, padding="SAME"))
+    model.add(Conv1D(64, kernel_size=2, dilation_rate=4, strides=1, padding="SAME"))
     model.add(Activation('relu'))
     model.add(MaxPooling1D(pool_size=2))
-    model.add(Flatten()) 
+    model.add(Flatten())
     model.add(Dense(32))
-    model.add(Activation('relu')) 
-    model.add(Dropout(0.5)) 
-    model.add(Dense(1)) 
-    model.add(Activation('sigmoid')) 
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(1))
+    model.add(Activation('sigmoid'))
     model.compile(optimizer='adam',
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
