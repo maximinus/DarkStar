@@ -1,21 +1,19 @@
 Tensorflow Docker Instructions
 ==============================
 
-Create a docker container, and run inside as user:
+Create a docker container, and run inside as user::
 
 	docker run -u $(id -u):$(id -g) --gpus all -it libs bash
 
-You can run
+You can run::
 
 	docker ps -a
 
-To view all current containers, or
+To view all current containers, or::
 
 	docker
 
-|
-
-We need to mount a directory that we can edit from outside the container:
+We need to mount a directory that we can edit from outside the container::
 
 	docker run -u $(id -u):$(id -g) --gpus all -it -v /home/sparky/code/mlmount:/app tensorflow/tensorflow:2.0.1-gpu-py3 bash
 
@@ -24,12 +22,12 @@ We need to mount a directory that we can edit from outside the container:
 Building a container
 --------------------
 
-Build a new container, run and mount image:
+Build a new container, run and mount image::
 
 	docker build -t {name} .
 	docker run -u $(id -u):$(id -g) --gpus all -it -v /home/sparky/code/DarkStar:/app {name} bash
 
-Second time, exec instead:
+Second time, exec instead::
 
 	docker start {container_name}
 	docker exec -it {container_name} bash
@@ -41,13 +39,13 @@ Running Code Inside a Docker container
 
 1: Build a container as shown above
 
-2: You can view current machines with
+2: You can view current machines with::
 
 	docker ps -a
 
 3: In our case, the container we will use for our examples is called "machinel"
 
-4: Now start the machine:
+4: Now start the machine::
 
 	docker start machine1
 	docker exec -it machine1 bash

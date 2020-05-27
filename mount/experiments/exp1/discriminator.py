@@ -16,8 +16,10 @@ import os
 import sys
 from tqdm import tqdm
 import random
+from datetime import datetime
 import tensorflow as tf
 from tensorflow.keras.layers import Conv1D, Dense, Dropout, Flatten, Activation, MaxPooling1D
+from tensorflow.keras.callbacks import TensorBoard
 import numpy as np
 
 from darkstar import helpers
@@ -28,6 +30,8 @@ BATCH_SIZE = 1
 
 AUD_SLICES = 'music/slices/aud'
 SBD_SLICES = 'music/slices/sbd'
+
+LOG_DIRECTORY = 'logs/'
 
 
 class ModelData:
@@ -60,6 +64,10 @@ class ModelData:
         stext = f'[{len(self.check_sbd)}, {len(self.test_sbd)}]'
         return f'ModelData: [{len(self.x_test)}, {len(self.x_check)}]'
 
+
+def getLoggerCallback():
+    logdir = LOG_DIRECTORY + datetime.now().strftime("%Y%m%d-%H%M%S")
+    return TensorBoard(log_dir=logdir)
 
 def loadAllFiles(folder):
     # ensure folder exists
@@ -110,16 +118,7 @@ if __name__ == '__main__':
     data = getData()
     model = getDiscriminator()
     model.summary()
-
-    # (10653, 8192, 1)
-    # (10653,)
-    # (2663, 8192, 1)
-    # (2663,)
-    print(data.x_test.shape)
-    print(data.y_test.shape)
-    print(data.x_check.shape)
-    print(data.y_check.shape)
-
     results = model.fit(data.x_test, data.y_test,
                         validation_data=(data.x_check, data.y_check),
-                        epochs=TOTAL_EPOCHS, batch_size=BATCH_SIZE)
+                        epochs=TOTAL_EPOCHS,
+                        callbacks=[getLoggerCallback()])
